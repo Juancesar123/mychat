@@ -1,0 +1,42 @@
+html(ng-app='mainApp')
+  head
+    link(rel='stylesheet', href='public/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='public/dist/sweetalert.css')
+    script(src='public/plugins/jQuery/jQuery-2.1.4.min.js')
+    script(src='public/dist/sweetalert.min.js')
+    script(src='public/js/angular.min.js')
+    script(src='public/js/socket.io.js')
+    script(type='text/javascript').
+      var mainApp = angular.module('mainApp',[])
+      mainApp.controller('appctrl',function($http,$scope){
+      $scope.daftar  = function(){
+      var email = $scope.email;
+      var nama = $scope.nama;
+      var password = $scope.password;
+      var jenis = $scope.jenis;
+      $http.post("pross_daftar",{nama:nama,email:email,password:password,jenis:jenis}).success(function(){
+      swal("Sukses!", "Anda Terdaftar di My chat!", "success");
+      })
+      }
+      })
+  body(ng-controller='appctrl')
+    .container
+      h1
+        center Daftar MyChat
+      .row
+        .col-md-4
+          .form-group
+            label Nama Lengkap
+            input.form-control(type='text', ng-model='nama')
+          .form-group
+            label Email
+            input.form-control(type='email', ng-model='email')
+          .form-group
+            label password
+            input.form-control(type='password', ng-model='password')
+          .form-group
+            label Jenis Kelamin
+            select.form-control(ng-model='jenis')
+              option(value='laki-laki') Laki-Laki
+              option(value='Perempuan') Perempuan
+          button.btn.btn-primary(type='submit', ng-click='daftar()') Daftar Sekarang

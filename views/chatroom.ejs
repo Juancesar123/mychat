@@ -1,0 +1,117 @@
+<html ng-app="mainApp">
+<head>
+<link rel="stylesheet" href="public/bootstrap/css/bootstrap.min.css">
+<script src="public/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<script src="public/js/angular.min.js"></script>
+<script src="public/js/socket.io.js"></script>
+<script type="text/javascript">
+    var mainApp = angular.module('mainApp',[])
+    mainApp.factory('socket', ['$rootScope', function($rootScope) {
+      var socket = io.connect();
+
+      return {
+        on: function(eventName, callback){
+          socket.on(eventName, callback);
+        },
+        emit: function(eventName, data) {
+          socket.emit(eventName, data);
+        }
+      };
+    }]);
+    mainApp.controller('appctrl',function(socket,$http,$scope){
+      $scope.getdata=function(){
+        $http.get("ambil_data_teman").success(function(data){
+          $scope.teman = data;
+        })
+      }
+      $scope.getdata();
+      $scope.login  = function(){
+      var nama = $scope.nama;
+      $scope.inputnama = true;
+      $scope.pesantampil = true;
+      $scope.loginhide = true;
+      $scope.kirim = true;
+      socket.emit('add chat',nama);
+      socket.on('user joined',function(data){
+      $scope.nama = data.username;
+    });
+    }
+    $scope.cari = function(){
+      var nama = $scope.nama;
+      $http.post("pencarian_teman",{nama:nama}).success(function(data){
+        $scope.datateman = data;
+      })
+    }
+    $scope.simpan = function(){
+      var pesan = $scope.pesan;
+      $http.post("pesan_masuk",{pesan:pesan}).success(function(){
+        $scope.getdata();
+        socket.emit({})
+      })
+    }
+
+    $scope.sendpesan = function(){
+      var pesan = $scope.pesan;
+      socket.emit('pesan baru',pesan);
+      socket.on('pesan baru',function(data){
+        $scope. isipesan = data;
+        console.log(data)
+      });
+    }
+    })
+    </script>
+</head>
+<body ng-controller="appctrl">
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cari Teman</h4>
+      </div>
+      <div class="modal-body">
+      <form ng-submit="cari()">
+        <div class="form-group">
+        <input type="text" class="form-control" placeholder="cari......" ng-model="nama">
+        </div>
+        </form>
+       <div ng-repeat="item in datateman">
+         {{item.nama}}
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="container">
+<h1><center>Chat room</center></h1>
+<!--<div class="row">
+  <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Cari Teman</button>
+</div>
+-->
+<div class="row">
+<div class="col-md-4" ng-repeat="item in teman">
+  <div class="thumbnail">
+  <img class="responsive" ng-src="{{item.urlgambar}}">
+  <h3><strong>{{item.nama}}</strong></h3>
+  </div>
+  </div>
+  <div class="col-md-6">
+  <div class="thumbnail">
+  <form ng-submit="simpan()">
+  <div class="form-group">
+  <input class="form-control" type="text" placeholder="ketik disini...." ng-model="pesan">
+  </div>
+  </form>
+  </div>
+</div>
+</div>
+</div>
+<script src="public/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "ebooksearch",
+  "version": "1.0.0",
+  "description": "ini adalah aplikasi pencarian ebook terlengkap di indonesia secara gratis",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "juancesar123"
+  },
+  "keywords": [
+    "pencarian",
+    "ebook"
+  ],
+  "author": "juan ceasar andrianto",
+  "license": "ISC",
+  "dependencies": {
+    "helmet": "^2.3.0"
+  }
+}

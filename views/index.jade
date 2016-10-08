@@ -1,0 +1,21 @@
+html
+  head
+    link(rel='stylesheet', href='public/bootstrap/css/bootstrap.min.css')
+    script(src='public/plugins/jQuery/jQuery-2.1.4.min.js')
+    script(src='public/js/angular.min.js')
+    script(src='public/js/socket.io.js')
+  body(ng-controller='appctrl')
+    .container
+      h1
+        center My Chat
+      .row
+        .col-md-4
+          form(action='/pross_login', method='post')
+            .form-group
+              label Email
+              input.form-control(type='text', ng-model='nama' name='email')
+            .form-group
+              label password
+              input.form-control(type='password', ng-model='password' name='password')
+            button.btn.btn-primary(type='submit') Login
+          a.btn.btn-danger(href='register') SignUp Now

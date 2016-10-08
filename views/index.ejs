@@ -1,0 +1,65 @@
+<html ng-app="mainApp">
+<head>
+<link rel="stylesheet" href="public/bootstrap/css/bootstrap.min.css">
+<script src="public/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<script src="public/js/angular.min.js"></script>
+<script src="public/js/socket.io.js"></script>
+<script type="text/javascript">
+    var mainApp = angular.module('mainApp',[])
+    mainApp.factory('socket', ['$rootScope', function($rootScope) {
+      var socket = io.connect();
+
+      return {
+        on: function(eventName, callback){
+          socket.on(eventName, callback);
+        },
+        emit: function(eventName, data) {
+          socket.emit(eventName, data);
+        }
+      };
+    }]);
+    mainApp.controller('appctrl',function(socket,$http,$scope){
+      $scope.login  = function(){
+      var nama = $scope.nama;
+      $scope.inputnama = true;
+      $scope.pesantampil = true;
+      $scope.loginhide = true;
+      $scope.kirim = true;
+      socket.emit('add chat',nama);
+      socket.on('user joined',function(data){
+      $scope.nama = data.username;
+    });
+    }
+    $scope.sendpesan = function(){
+      var pesan = $scope.pesan;
+      socket.emit('pesan baru',pesan);
+      socket.on('pesan baru',function(data){
+        $scope. isipesan = data;
+        console.log(data)
+      });
+    }
+    })
+    </script>
+</head>
+<body ng-controller="appctrl">
+<div class="container">
+<h1><center>My Chat</center></h1>
+<div class="row">
+<div class="col-md-4">
+<form action="/pross_login" method="post">
+<div class ="form-group">
+<label>Email</label>
+<input type="text" class="form-control" ng-model="nama">
+</div>
+<div class ="form-group">
+<label>password</label>
+<input type="password" class="form-control" ng-model="password">
+</div>
+<button type="submit" class="btn btn-primary">Login</button>
+</form>
+<a href="register" class="btn btn-danger">SignUp Now</a>
+</div>
+</div>
+</div>
+</body>
+</html>
